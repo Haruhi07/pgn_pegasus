@@ -7,4 +7,7 @@
 #SBATCH --mem=8192M
 
 cd "${SLURM_SUBMIT_DIR}"
+
+export SAVE_DIR="./cache"
+
 python3 -u ./train.py
