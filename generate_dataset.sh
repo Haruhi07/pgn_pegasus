@@ -7,4 +7,4 @@
 #SBATCH --mem=8192M
 
 cd "${SLURM_SUBMIT_DIR}"
-python3 -u ./train.py
+python3 -u ./generate_dataset.py
