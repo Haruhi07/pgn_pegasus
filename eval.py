@@ -16,32 +16,43 @@ set_random_seed(42)
 results_dir = Path("./results")
 
 
-def eval(model, tokenizer, eval_loader, device):
-    rouge = evaluate.load("rouge")
-    references = []
-    predictions_ids = []
+def generate_reference(eval_dataset):
+    print("-------------------Generating Reference-------------------")
+    references = eval_dataset[:]["highlights"]
+    with open(results_dir/"references.json", "w") as fp:
+        json.dump(references, fp)
+
+
+def generate_output(model, tokenizer, eval_loader):
     model.eval()
+    pbar = tqdm(total=len(tokenized_test))
     step = 0
-    pbar = tqdm(total=len(eval_loader))
+    predictions_ids = []
 
     for sample in eval_loader:
         step += 1
         pbar.update(1)
 
-        references.append(sample['highlights'][0])
-
-        input_ids = torch.LongTensor(sample["input_ids"]).to(device)
+        input_ids = torch.tensor(sample["input_ids"]).to(device)
         with torch.no_grad():
             output = model.generate(input_ids=input_ids,
                                     max_new_tokens=128)[0]
         predictions_ids.append(output)
-        #break
-    predictions = tokenizer.batch_decode(predictions_ids, skip_special_tokens=True)
-    print("-------------------Computing ROUGE Score-------------------")
-    results = rouge.compute(predictions=predictions, references=references)
 
-    with open(results_dir/"result.json", "w") as fp:
-        json.dump(results, fp)
+    predictions = tokenizer.batch_decode(predictions_ids, skip_special_tokens=True)
+    with open(results_dir/"predictions.json", "w") as fp:
+        json.dump(predictions, fp)
+
+
+def eval(ref_path, pred_path):
+    with open(ref_path, "r") as fp:
+        references = json.load(fp)
+    with open(pred_path, "r") as fp:
+        predictions = json.load(fp)
+    print("-------------------Computing ROUGE Score-------------------")
+    rouge = evaluate.load("rouge")
+    results = rouge.compute(predictions=predictions, references=references)
+    print(results)
     return results
 
 
@@ -59,9 +70,17 @@ if __name__ == "__main__":
         model.load_state_dict(args.model).to(device)
 
     tokenized_test = load_from_disk(args.dataset)
+    generate_reference(eval_dataset=tokenized_test)
     test_loader = DataLoader(tokenized_test,
                              sampler=SequentialSampler(tokenized_test),
                              num_workers=2,
                              batch_size=1)
 
-    eval(model, tokenizer, test_loader, device)
+    generate_output(model=model,
+                    tokenizer=tokenizer,
+                    eval_loader=test_loader)
+
+    eval_result = eval(ref_path=results_dir / "references.json",
+                       pred_path=results_dir / "predictions.json")
+    with open(results_dir / "random.json", "w") as fp:
+        json.dump(eval_result, fp)
