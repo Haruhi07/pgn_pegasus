@@ -6,5 +6,5 @@
 #SBATCH --time=0:20:0
 #SBATCH --mem=8192M
 
-cd /user/work/hs20307
+cd "${SLURM_SUBMIT_DIR}"
 python3 -u ./generate_dataset.py
