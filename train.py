@@ -35,7 +35,7 @@ from torch.utils.data.sampler import RandomSampler, SequentialSampler
 seed = 42
 utils.set_random_seed(seed)
 
-save_dir = Path(os.getenv("SAVE_DIR", None))
+save_dir = Path("./checkpoints")
 tmp_dir = Path('./tmp/tmpmodel.pt')
 original_checkpoint = 'google/pegasus-cnn_dailymail'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
