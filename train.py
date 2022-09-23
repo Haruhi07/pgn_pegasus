@@ -99,7 +99,6 @@ def validation(model, val_loader):
     model.eval()
 
     total_eval_loss = 0
-    nb_eval_steps = 0
 
     # Evaluate data for one epoch
     for step, sample in enumerate(val_loader):
@@ -173,13 +172,8 @@ def train(state, train_loader, val_loader, sample_every=5000, batch_size=8, max_
         pbar.update(step)
 
         for sample in train_loader:
-            # only train the pointer-generator layer
-            model.eval()
-            model.Pointer.train()
-            for p in model.pegasus.parameters():
-                p.requires_grad = False
-            for p in model.Pointer.parameters():
-                p.requires_grad = True
+            # train the whole model
+            model.train()
 
             input_ids = torch.LongTensor(sample["input_ids"]).to(device)
             labels = torch.LongTensor(sample["decoder_input_ids"]).to(device)
