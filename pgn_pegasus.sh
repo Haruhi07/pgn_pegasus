@@ -7,4 +7,4 @@
 #SBATCH --mem=8192M
 
 cd /user/work/hs20307
-python generate_dataset.py
+python3 -u generate_dataset.py
