@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from datasets import load_dataset
 from transformers import PegasusTokenizer
@@ -24,10 +25,12 @@ def tokenize_dataset(sample):
     sample["decoder_attention_mask"] = decoder_input_dict["attention_mask"]
     return sample
 
+sys.stderr.write("before loading")
 training = load_dataset("cnn_dailymail", "3.0.0", split="train", cache_dir=cache_dir)
 validation = load_dataset("cnn_dailymail", "3.0.0", split="validation", cache_dir=cache_dir)
 test = load_dataset("cnn_dailymail", "3.0.0", split="test", cache_dir=cache_dir)
 
+sys.stderr.write("after loading")
 tokenized_training = training.map(tokenize_dataset)
 tokenized_validation = validation.map(tokenize_dataset)
 tokenized_test = test.map(tokenize_dataset)
