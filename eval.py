@@ -1,4 +1,3 @@
-from tqdm import tqdm
 import json
 import torch
 import argparse
@@ -25,13 +24,13 @@ def generate_reference(eval_dataset):
 
 def generate_output(model, tokenizer, eval_loader):
     model.eval()
-    pbar = tqdm(total=len(tokenized_test))
-    step = 0
     predictions_ids = []
+    step = 0
 
     for sample in eval_loader:
         step += 1
-        pbar.update(1)
+        if step == 1000:
+            print(step)
 
         input_ids = torch.tensor(sample["input_ids"]).to(device)
         with torch.no_grad():
@@ -70,7 +69,7 @@ if __name__ == "__main__":
         model.load_state_dict(args.model).to(device)
 
     tokenized_test = load_from_disk(args.dataset)
-    generate_reference(eval_dataset=tokenized_test)
+    #generate_reference(eval_dataset=tokenized_test)
     test_loader = DataLoader(tokenized_test,
                              sampler=SequentialSampler(tokenized_test),
                              num_workers=2,
