@@ -8,4 +8,6 @@
 #SBATCH --output=gen_dataset.output
 
 cd "${SLURM_SUBMIT_DIR}"
+
+source venv/bin/activate
 python3 -u ./generate_dataset.py
