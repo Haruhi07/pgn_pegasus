@@ -2,3 +2,4 @@ cache
 checkpoints
 venv
 .idea
+dataset_cache/
