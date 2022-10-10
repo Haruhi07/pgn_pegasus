@@ -31,7 +31,6 @@ def generate_output(model, tokenizer, eval_loader):
     step = 0
 
     for sample in eval_loader:
-        print(sample)
         step += 1
         print(step)
 
