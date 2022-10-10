@@ -29,8 +29,7 @@ def generate_output(model, tokenizer, eval_loader):
 
     for sample in eval_loader:
         step += 1
-        if step == 1000:
-            print(step)
+        print(step)
 
         input_ids = torch.tensor(sample["input_ids"]).to(device)
         with torch.no_grad():
