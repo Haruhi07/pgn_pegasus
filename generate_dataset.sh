@@ -5,6 +5,7 @@
 #SBATCH --job-name=pgn_pegasus
 #SBATCH --time=1:0:0
 #SBATCH --mem=8192M
+#SBATCH --output=gen_dataset.output
 
 cd "${SLURM_SUBMIT_DIR}"
 python3 -u ./generate_dataset.py
