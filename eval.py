@@ -1,4 +1,6 @@
 import json
+import pickle
+
 import torch
 import argparse
 import evaluate
@@ -7,6 +9,7 @@ from pathlib import Path
 from Model import PointerPegasus
 from torch.utils.data import DataLoader, SequentialSampler
 from datasets import load_from_disk
+from generate_dataset import PegasusDataset
 from transformers import PegasusTokenizer
 
 seed = 42
@@ -28,10 +31,11 @@ def generate_output(model, tokenizer, eval_loader):
     step = 0
 
     for sample in eval_loader:
+        print(sample)
         step += 1
         print(step)
 
-        input_ids = torch.tensor(sample["input_ids"]).to(device)
+        input_ids = sample["input_ids"].to(device)
         with torch.no_grad():
             output = model.generate(input_ids=input_ids,
                                     max_new_tokens=128)[0]
@@ -67,11 +71,14 @@ if __name__ == "__main__":
     if args.model is not None:
         model.load_state_dict(args.model).to(device)
 
-    tokenized_test = load_from_disk(args.dataset)
+    test_dir = Path(args.dataset)/"tokenized_test.json"
+    print("loading tokenized_test...")
+    with open(test_dir, 'rb') as fp:
+        tokenized_test = pickle.load(fp)
     #generate_reference(eval_dataset=tokenized_test)
     test_loader = DataLoader(tokenized_test,
                              sampler=SequentialSampler(tokenized_test),
-                             num_workers=2,
+                             num_workers=8,
                              batch_size=1)
 
     generate_output(model=model,
