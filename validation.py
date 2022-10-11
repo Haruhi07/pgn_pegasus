@@ -18,6 +18,7 @@ from torch.optim import AdamW
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.data.sampler import SequentialSampler
+from generate_dataset import PegasusDataset
 
 
 def validation(model, val_loader, loss_fct):
