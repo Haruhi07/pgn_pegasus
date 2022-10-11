@@ -1,9 +1,9 @@
 import json
 import pickle
-
 import torch
 import argparse
 import evaluate
+from tqdm import tqdm
 from utils import set_random_seed
 from pathlib import Path
 from Model import PointerPegasus
@@ -30,9 +30,7 @@ def generate_output(model, tokenizer, eval_loader):
     predictions_ids = []
     step = 0
 
-    for sample in eval_loader:
-        step += 1
-        print(step)
+    for sample in tqdm(eval_loader):
 
         input_ids = sample["input_ids"].to(device)
         with torch.no_grad():
