@@ -11,18 +11,24 @@ class PegasusDataset(Dataset):
     def __init__(self, dataset, tokenizer, max_length=128, max_source_length=512):
         self.dataset = []
         for idx, sample in enumerate(tqdm(dataset)):
-            input_ids = tokenizer(sample["article"],
+            input_dict = tokenizer(sample["article"],
                                    truncation=True,
                                    max_length=max_source_length,
-                                   return_tensors='pt')["input_ids"][0]
-            decoder_input_ids = tokenizer(tokenizer.pad_token+sample["highlights"],
+                                   return_tensors='pt')
+            input_ids = input_dict["input_ids"][0]
+            attention_mask = input_dict["attention_mask"][0]
+            decoder_input_dict = tokenizer(tokenizer.pad_token+sample["highlights"],
                                            truncation=True,
                                            max_length=max_length,
-                                           return_tensors='pt')["input_ids"][0]
+                                           return_tensors='pt')
+            decoder_input_ids = decoder_input_dict["input_ids"][0]
+            decoder_attention_mask = decoder_input_dict["attention_mask"][0]
             self.dataset.append({"article": sample["article"],
                                  "highlights": sample["highlights"],
                                  "input_ids": input_ids,
-                                 "decoder_input_ids": decoder_input_ids})
+                                 "attention_mask": attention_mask,
+                                 "decoder_input_ids": decoder_input_ids,
+                                 "decoder_attention_mask": decoder_attention_mask})
 
     def __getitem__(self, item):
         return self.dataset[item]
