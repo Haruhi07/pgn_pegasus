@@ -39,16 +39,18 @@ def validation(model, val_loader, loss_fct):
 
         input_ids = sample["input_ids"].to(device)
         labels = sample["decoder_input_ids"].to(device)
+        attention_mask = sample["attention_mask"].to(device)
 
         with torch.no_grad():
-            return_dict = model(input_ids=input_ids,
+            output = model(input_ids=input_ids,
+                                attention_mask=attention_mask,
                                 decoder_input_ids=labels)
-        logits = return_dict["logits"]
+        gen_probs, final_probs = output
 
-        logits = logits.contiguous()
+        final_probs = final_probs.contiguous()
         labels = labels.contiguous()
 
-        loss = loss_fct(logits.view(-1, logits.size(-1)), labels.view(-1))
+        loss = loss_fct(final_probs.view(-1, final_probs.size(-1)), labels.view(-1))
 
         total_eval_loss += loss.item()
 
