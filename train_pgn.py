@@ -13,13 +13,13 @@ from utils import set_random_seed, format_time
 import transformers
 from tqdm import tqdm
 from pathlib import Path
-from datasets import load_from_disk
+from generate_dataset import PegasusDataset
 from Model import PointerPegasus
 from transformers import PegasusConfig, PegasusTokenizer
 from transformers import get_linear_schedule_with_warmup
 from torch.optim import AdamW
 from torch.nn import CrossEntropyLoss
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 from torch.utils.data.sampler import RandomSampler, SequentialSampler
 
 
