@@ -148,8 +148,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", default=7)
     parser.add_argument("--grad_acc_steps", default=8)
-    parser.add_argument("--model", default=None)
-    parser.add_argument("--dataset", required=True)
     parser.add_argument("--sample_every", default=10000)
     parser.add_argument("--checkpoint", default="google/pegasus-cnn_dailymail")
     args = parser.parse_args()
