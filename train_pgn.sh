@@ -4,7 +4,8 @@
 #SBATCH --partition gpu
 #SBATCH --job-name=train_pgn
 #SBATCH --time=0:10:0
-#SBATCH --mem=8192M
+#SBATCH --output=train_pgn.output
+#SBATCH --mem=17000M
 
 cd "${SLURM_SUBMIT_DIR}"
 
