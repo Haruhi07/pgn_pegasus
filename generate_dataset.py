@@ -40,18 +40,18 @@ if __name__ == "__main__":
     dataset_dir = Path("./dataset_cache")
     tokenizer = PegasusTokenizer.from_pretrained("google/pegasus-cnn_dailymail")
 
-    sys.stderr.write("before loading")
+    print("before loading")
     training = load_dataset("cnn_dailymail", "3.0.0", split="train", cache_dir=cache_dir)
     validation = load_dataset("cnn_dailymail", "3.0.0", split="validation", cache_dir=cache_dir)
     test = load_dataset("cnn_dailymail", "3.0.0", split="test", cache_dir=cache_dir)
 
-    sys.stderr.write("after loading")
-    tokenized_training = PegasusDataset(training, tokenizer)
+    print("after loading")
+    #tokenized_training = PegasusDataset(training, tokenizer)
     tokenized_validation = PegasusDataset(validation, tokenizer)
     tokenized_test = PegasusDataset(test, tokenizer)
 
-    with open(dataset_dir/"tokenized_training.json", "wb") as fp:
-        pickle.dump(tokenized_training, fp)
+    #with open(dataset_dir/"tokenized_training.json", "wb") as fp:
+    #    pickle.dump(tokenized_training, fp)
     with open(dataset_dir/"tokenized_validation.json", "wb") as fp:
         pickle.dump(tokenized_validation, fp)
     with open(dataset_dir/"tokenized_test.json", "wb") as fp:

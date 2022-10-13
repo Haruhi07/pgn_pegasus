@@ -15,6 +15,7 @@ from tqdm import tqdm
 from pathlib import Path
 from generate_dataset import PegasusDataset
 from Model import PointerPegasus
+from validation import validation
 from transformers import PegasusConfig, PegasusTokenizer
 from transformers import get_linear_schedule_with_warmup
 from torch.optim import AdamW
@@ -47,10 +48,12 @@ def train(model, tokenizer, train_loader, val_loader, sample_every=5000, grad_ac
             p.requires_grad = True
 
         for step, sample in enumerate(tqdm(train_loader)):
-            input_ids = torch.LongTensor(sample["input_ids"]).to(device)
-            labels = torch.LongTensor(sample["decoder_input_ids"]).to(device)
+            input_ids = sample["input_ids"].to(device)
+            attention_mask = sample["attention_mask"].to(device)
+            labels = sample["decoder_input_ids"].to(device)
 
             output = model.forward(input_ids=input_ids,
+                                   attention_mask=attention_mask,
                                    decoder_input_ids=labels)
             gen_probs, final_probs = output
             
@@ -64,7 +67,7 @@ def train(model, tokenizer, train_loader, val_loader, sample_every=5000, grad_ac
             torch.nn.utils.clip_grad_norm_(model.Pointer.parameters(), max_grad_norm)
             tr_loss += loss.item()
             
-            if (step % grad_acc_steps == 0) or (step == len(tokenized_training)):
+            if (step % grad_acc_steps == 0) or (step == len(tokenized_validation)):
                 optimizer.step()
                 scheduler.step()  # Update learning rate schedule
                 optimizer.zero_grad()
@@ -84,8 +87,8 @@ def train(model, tokenizer, train_loader, val_loader, sample_every=5000, grad_ac
                         print("lr : {} tr_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss), end='\n\n')
 
             # Evaluate the model every 20000 steps
-            if step % 20000 ==0:
-                avg_val_loss, validation_time = validation(model, val_loader)
+            if step != 0 and step % 20000 ==0:
+                avg_val_loss, validation_time = validation(model, val_loader, loss_fct)
                 print("lr : {} tr_loss: {} val_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss, avg_val_loss), end='\n\n')
 
                 if (best_val_loss is None) or (avg_val_loss < best_val_loss):
