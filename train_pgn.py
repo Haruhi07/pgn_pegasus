@@ -38,6 +38,7 @@ def train(model, tokenizer, train_loader, val_loader, sample_every=5000, grad_ac
         model.zero_grad()
         global_step = 0
         tr_loss = 0
+        avg_train_loss = 0
 
         # train the pgn only
         model.eval()
@@ -75,8 +76,6 @@ def train(model, tokenizer, train_loader, val_loader, sample_every=5000, grad_ac
                 global_step += 1
                 # Calculate the average loss over all of the batches.
                 avg_train_loss = tr_loss / global_step
-                # Measure how long this epoch took.
-                training_time = format_time(time.time() - t0)
                 
                 if global_step % sample_every == 0:
                     model.eval()
@@ -86,32 +85,17 @@ def train(model, tokenizer, train_loader, val_loader, sample_every=5000, grad_ac
                         print("{} {}".format(len(sample_tgt), tokenizer.decode(sample_tgt)), end='\n\n')
                         print("lr : {} tr_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss), end='\n\n')
 
-            # Evaluate the model every 20000 steps
-            if step != 0 and step % 20000 ==0:
-                avg_val_loss, validation_time = validation(model, val_loader, loss_fct)
-                print("lr : {} tr_loss: {} val_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss, avg_val_loss), end='\n\n')
+        # Evaluate the model after each epoch
+        avg_val_loss, validation_time = validation(model, val_loader, loss_fct)
+        print("lr : {} tr_loss: {} val_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss, avg_val_loss), end='\n\n')
+        # Measure how long this epoch took.
+        training_time = format_time(time.time() - t0)
 
-                if (best_val_loss is None) or (avg_val_loss < best_val_loss):
-                    best_val_loss = avg_val_loss
-                    torch.save(state, save_dir)
-                    tokenizer.save_pretrained(save_dir)
-                    print("model saved on step {} with val loss: {}", step, best_val_loss)
-
-                # save the training status every 'sample_every' global_steps (8*'sample_every' steps)
-                state = {'epoch': epoch_i,
-                         'step': step,
-                         'model': model.state_dict(),
-                         'train_loader': train_loader,
-                         'optimizer': optimizer.state_dict(),
-                         'scheduler': scheduler.state_dict(),
-                         'Total Training Loss': tr_loss,
-                         'Validation Loss': avg_val_loss,
-                         'Training Time': training_time,
-                         'Validation Time': validation_time,
-                         'Best Validation Loss': best_val_loss}
-
-                torch.save(state, tmp_dir)
-                tokenizer.save_pretrained(save_dir)
+        if (best_val_loss is None) or (avg_val_loss < best_val_loss):
+            best_val_loss = avg_val_loss
+            torch.save(model, save_dir)
+            tokenizer.save_pretrained(save_dir)
+            print("model saved on epoch {} with val loss: {}", epoch_i, best_val_loss)
 
         print("")
         print("-------------------Average training loss: {0:.2f}-------------------".format(avg_train_loss))
