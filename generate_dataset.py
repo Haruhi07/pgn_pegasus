@@ -1,4 +1,5 @@
 import sys
+import pandas as pd
 import pickle
 from tqdm import tqdm
 from pathlib import Path
@@ -9,7 +10,12 @@ from torch.utils.data.dataset import Dataset
 
 class PegasusDataset(Dataset):
     def __init__(self, dataset, tokenizer, max_length=128, max_source_length=512):
-        self.dataset = []
+        super(PegasusDataset, self).__init__()
+        dataset_dict = {"article": [],
+                        "highlights": [],
+                        "input_ids": [],
+                        "attention_mask": [],
+                        "decoder_input_ids": []}
         for idx, sample in enumerate(tqdm(dataset)):
             input_dict = tokenizer(sample["article"],
                                    truncation=True,
@@ -22,14 +28,16 @@ class PegasusDataset(Dataset):
                                            max_length=max_length,
                                            return_tensors='pt')["input_ids"][0]
 
-            self.dataset.append({"article": sample["article"],
-                                 "highlights": sample["highlights"],
-                                 "input_ids": input_ids,
-                                 "attention_mask": attention_mask,
-                                 "decoder_input_ids": decoder_input_ids})
+            dataset_dict["article"].append(sample["article"])
+            dataset_dict["highlights"].append(sample["highlights"])
+            dataset_dict["input_ids"].append(input_ids)
+            dataset_dict["attention_mask"].append(attention_mask)
+            dataset_dict["decoder_input_ids"].append(decoder_input_ids)
+
+        self.dataset = pd.DataFrame.from_dict(dataset_dict)
 
     def __getitem__(self, item):
-        return self.dataset[item]
+        return self.dataset.iloc[item].to_dict()
 
     def __len__(self):
         return len(self.dataset)
