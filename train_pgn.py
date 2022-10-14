@@ -113,6 +113,7 @@ if __name__ == "__main__":
     save_dir = Path("./checkpoints")
     tmp_dir = Path('./tmp/tmpmodel.pt')
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(device)
 
     print("-------------------Loading Data-------------------")
     dataset_dir = Path("./dataset_cache")
@@ -123,11 +124,11 @@ if __name__ == "__main__":
 
     train_loader = DataLoader(tokenized_training,
                               sampler=RandomSampler(tokenized_training),
-                              num_workers=2,
+                              num_workers=0,
                               batch_size=1)
     val_loader = DataLoader(tokenized_validation,
                             sampler=SequentialSampler(tokenized_validation),
-                            num_workers=2,
+                            num_workers=0,
                             batch_size=1)
 
     print("-------------------Data Loaded-------------------")

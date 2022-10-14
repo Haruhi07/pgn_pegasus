@@ -43,8 +43,8 @@ def validation(model, val_loader, loss_fct):
 
         with torch.no_grad():
             output = model(input_ids=input_ids,
-                                attention_mask=attention_mask,
-                                decoder_input_ids=labels)
+                           attention_mask=attention_mask,
+                           decoder_input_ids=labels)
         gen_probs, final_probs = output
 
         final_probs = final_probs.contiguous()
