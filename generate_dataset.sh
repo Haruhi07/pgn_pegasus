@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1
-#SBATCH --partition short
+#SBATCH --partition gpu
 #SBATCH --job-name=gen_dataset
 #SBATCH --time=1:0:0
 #SBATCH --mem=10000M
