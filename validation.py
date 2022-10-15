@@ -21,7 +21,7 @@ from torch.utils.data.sampler import SequentialSampler
 from generate_dataset import PegasusDataset
 
 
-def validation(model, val_loader, loss_fct):
+def validation(model, device, val_loader, loss_fct):
     # ========================================
     #               Validation
     # ========================================

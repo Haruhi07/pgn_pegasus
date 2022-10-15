@@ -24,7 +24,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import RandomSampler, SequentialSampler
 
 
-def train(model, tokenizer, train_loader, val_loader, sample_every=5000, grad_acc_steps=8, max_grad_norm=1.0):
+def train(model, device, tokenizer, train_loader, val_loader, sample_every=5000, grad_acc_steps=8, max_grad_norm=1.0):
     total_t0 = time.time()
     best_val_loss = None
     for epoch_i in range(epochs):
@@ -86,7 +86,7 @@ def train(model, tokenizer, train_loader, val_loader, sample_every=5000, grad_ac
                         print("lr : {} tr_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss), end='\n\n')
 
         # Evaluate the model after each epoch
-        avg_val_loss, validation_time = validation(model, val_loader, loss_fct)
+        avg_val_loss, validation_time = validation(model, device, val_loader, loss_fct)
         print("lr : {} tr_loss: {} val_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss, avg_val_loss), end='\n\n')
         # Measure how long this epoch took.
         training_time = format_time(time.time() - t0)
@@ -165,6 +165,7 @@ if __name__ == "__main__":
     loss_fct = CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
 
     train(model,
+          device,
           tokenizer,
           train_loader=train_loader,
           val_loader=val_loader,
