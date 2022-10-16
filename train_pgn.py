@@ -49,7 +49,6 @@ def train(model, device, tokenizer, train_loader, val_loader, sample_every=5000,
             p.requires_grad = True
 
         for step, sample in enumerate(tqdm(train_loader)):
-            break
             input_ids = sample["input_ids"].to(device)
             attention_mask = sample["attention_mask"].to(device)
             labels = sample["decoder_input_ids"].to(device)
@@ -87,13 +86,13 @@ def train(model, device, tokenizer, train_loader, val_loader, sample_every=5000,
                         print("lr : {} tr_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss), end='\n\n')
 
         # Evaluate the model after each epoch
-        #avg_val_loss, validation_time = validation(model, device, val_loader, loss_fct)
-        #print("lr : {} tr_loss: {} val_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss, avg_val_loss), end='\n\n')
+        avg_val_loss, validation_time = validation(model, device, val_loader, loss_fct)
+        print("lr : {} tr_loss: {} val_loss: {}".format(scheduler.get_last_lr()[0], avg_train_loss, avg_val_loss), end='\n\n')
         # Measure how long this epoch took.
-        #training_time = format_time(time.time() - t0)
+        training_time = format_time(time.time() - t0)
 
-        if True or (best_val_loss is None) or (avg_val_loss < best_val_loss):
-            #best_val_loss = avg_val_loss
+        if (best_val_loss is None) or (avg_val_loss < best_val_loss):
+            best_val_loss = avg_val_loss
             checkpoint = "epoch_{}.pt".format(epoch_i)
             torch.save(model, save_dir/checkpoint)
             tokenizer.save_pretrained(save_dir)
