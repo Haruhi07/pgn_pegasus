@@ -152,7 +152,7 @@ if __name__ == "__main__":
     startpoint = "google/pegasus-cnn_dailymail"
 
     print("-------------------Creating A Instance for the Model-------------------")
-    tokenizer = PegasusTokenizer.from_pretrained(checkpoint)
+    tokenizer = PegasusTokenizer.from_pretrained(startpoint)
     if checkpoint == startpoint:
         model = PointerPegasus(checkpoint, tokenizer, device).to(device)
     else:
