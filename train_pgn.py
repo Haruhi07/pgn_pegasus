@@ -97,7 +97,6 @@ def train(model, device, tokenizer, train_loader, val_loader, sample_every=5000,
             torch.save(model, save_dir/checkpoint)
             tokenizer.save_pretrained(save_dir)
             print("model saved on epoch {} with val loss: {}", epoch_i, best_val_loss)
-            break
 
         print("")
         print("-------------------Average training loss: {0:.2f}-------------------".format(avg_train_loss))

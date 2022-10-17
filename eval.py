@@ -57,16 +57,17 @@ def eval(ref_path, pred_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default=None)
+    parser.add_argument("--checkpoint", default='google/pegasus-cnn_dailymail')
     parser.add_argument("--dataset", required=True)
     args = parser.parse_args()
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    checkpoint = 'google/pegasus-cnn_dailymail'
-    tokenizer = PegasusTokenizer.from_pretrained(checkpoint)
-    model = PointerPegasus(checkpoint, tokenizer, device).to(device)
-    if args.model is not None:
-        model.load_state_dict(args.model).to(device)
+    startpoint = 'google/pegasus-cnn_dailymail'
+    tokenizer = PegasusTokenizer.from_pretrained(startpoint)
+    if args.checkpoint != startpoint:
+        model = torch.load(args.model).to(device)
+    else:
+        model = PointerPegasus(startpoint, tokenizer, device).to(device)
 
     test_dir = Path(args.dataset)/"tokenized_test.json"
     print("loading tokenized_test...")
