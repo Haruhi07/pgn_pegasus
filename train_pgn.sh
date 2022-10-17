@@ -10,4 +10,4 @@
 cd "${SLURM_SUBMIT_DIR}"
 
 source venv/bin/activate
-python3 -u train_pgn.py
+python3 -u train_pgn.py --checkpoint ./checkpoints/epoch_0.pt

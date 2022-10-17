@@ -27,7 +27,7 @@ from torch.utils.data.sampler import RandomSampler, SequentialSampler
 def train(model, device, tokenizer, train_loader, val_loader, sample_every=5000, grad_acc_steps=8, max_grad_norm=1.0):
     total_t0 = time.time()
     best_val_loss = None
-    for epoch_i in range(epochs):
+    for epoch_i in range(1, epochs):
         # ========================================
         #               Training
         # ========================================
@@ -149,11 +149,15 @@ if __name__ == "__main__":
     total_steps = len(tokenized_training)*epochs
     sample_every = args.sample_every
     checkpoint = args.checkpoint
+    startpoint = "google/pegasus-cnn_dailymail"
 
     print("-------------------Creating A Instance for the Model-------------------")
     config = PegasusConfig.from_pretrained(checkpoint)
     tokenizer = PegasusTokenizer.from_pretrained(checkpoint)
-    model = PointerPegasus(checkpoint, tokenizer, device).to(device)
+    if checkpoint == startpoint:
+        model = PointerPegasus(checkpoint, tokenizer, device).to(device)
+    else:
+        model = torch.load(checkpoint).to(device)
 
     print("-------------------Instance Created-------------------")
 
