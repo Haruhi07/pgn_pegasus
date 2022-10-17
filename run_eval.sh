@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1
-#SBATCH --partition gpu
-#SBATCH --job-name=eval_random
-#SBATCH --time=96:0:0
+#SBATCH --partition gpu_short
+#SBATCH --job-name=eval_0
+#SBATCH --time=6:0:0
 #SBATCH --mem=16384M
 
 cd "${SLURM_SUBMIT_DIR}"
