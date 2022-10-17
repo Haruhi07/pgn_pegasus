@@ -59,13 +59,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint", default='google/pegasus-cnn_dailymail')
     parser.add_argument("--dataset", required=True)
+    parser.add_argument("--epoch", required=True)
     args = parser.parse_args()
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     startpoint = 'google/pegasus-cnn_dailymail'
     tokenizer = PegasusTokenizer.from_pretrained(startpoint)
     if args.checkpoint != startpoint:
-        model = torch.load(args.model).to(device)
+        model = torch.load(args.checkpoint).to(device)
     else:
         model = PointerPegasus(startpoint, tokenizer, device).to(device)
 
@@ -85,5 +86,5 @@ if __name__ == "__main__":
 
     eval_result = eval(ref_path=results_dir / "references.json",
                        pred_path=results_dir / "predictions.json")
-    with open(results_dir / "random.json", "w") as fp:
+    with open(results_dir / "epoch_{}.json".format(args.epoch), "w") as fp:
         json.dump(eval_result, fp)
