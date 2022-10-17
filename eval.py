@@ -66,6 +66,7 @@ if __name__ == "__main__":
     startpoint = 'google/pegasus-cnn_dailymail'
     tokenizer = PegasusTokenizer.from_pretrained(startpoint)
     if args.checkpoint != startpoint:
+        print("loading model from {}".format(args.checkpoint))
         model = torch.load(args.checkpoint).to(device)
     else:
         model = PointerPegasus(startpoint, tokenizer, device).to(device)

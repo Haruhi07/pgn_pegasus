@@ -146,7 +146,7 @@ if __name__ == "__main__":
     warmup_ratio = 0.1
     epsilon = 1e-8
     grad_acc_steps = args.grad_acc_steps
-    total_steps = len(tokenized_training)*epochs
+    total_steps = len(tokenized_training)
     sample_every = args.sample_every
     checkpoint = args.checkpoint
     startpoint = "google/pegasus-cnn_dailymail"
@@ -156,6 +156,7 @@ if __name__ == "__main__":
     if checkpoint == startpoint:
         model = PointerPegasus(checkpoint, tokenizer, device).to(device)
     else:
+        print("loading model from {}".format(checkpoint))
         model = torch.load(checkpoint).to(device)
 
     print("-------------------Instance Created-------------------")
