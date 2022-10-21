@@ -31,7 +31,7 @@ def train(model, device, tokenizer, train_loader, val_loader, sample_every=5000,
         # ========================================
         #               Training
         # ========================================
-        print('======== Epoch {:} / {:} ========'.format(epoch_i + 1, epochs))
+        print('======== Epoch {:} / {:} ========'.format(epoch_i, epochs))
         print('Training...')
 
         t0 = time.time()
