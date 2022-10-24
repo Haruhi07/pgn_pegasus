@@ -86,6 +86,6 @@ if __name__ == "__main__":
                     eval_loader=test_loader)
 
     eval_result = eval(ref_path=results_dir / "references.json",
-                       pred_path=results_dir / "predictions.json")
-    with open(results_dir / "epoch_{}.json".format(args.epoch), "w") as fp:
+                       pred_path=results_dir / "epoch_{}".format(args.epoch) / "predictions.json")
+    with open(results_dir / "epoch_{}".format(args.epoch) / "epoch_{}.json".format(args.epoch), "w") as fp:
         json.dump(eval_result, fp)
