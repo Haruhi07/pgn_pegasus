@@ -26,7 +26,6 @@ def generate_reference(eval_dataset):
 
 
 def generate_output(model, tokenizer, eval_loader, save_dir):
-    return
     model.eval()
     predictions_ids = []
     step = 0
