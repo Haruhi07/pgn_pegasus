@@ -25,7 +25,8 @@ def generate_reference(eval_dataset):
         json.dump(references, fp)
 
 
-def generate_output(model, tokenizer, eval_loader):
+def generate_output(model, tokenizer, eval_loader, save_dir):
+    return
     model.eval()
     predictions_ids = []
     step = 0
@@ -39,7 +40,7 @@ def generate_output(model, tokenizer, eval_loader):
         predictions_ids.append(output)
 
     predictions = tokenizer.batch_decode(predictions_ids, skip_special_tokens=True)
-    with open(results_dir/"predictions.json", "w") as fp:
+    with open(save_dir, "w") as fp:
         json.dump(predictions, fp)
 
 
@@ -83,7 +84,8 @@ if __name__ == "__main__":
 
     generate_output(model=model,
                     tokenizer=tokenizer,
-                    eval_loader=test_loader)
+                    eval_loader=test_loader,
+                    save_dir=results_dir / "epoch_{}".format(args.epoch) / "predictions.json")
 
     eval_result = eval(ref_path=results_dir / "references.json",
                        pred_path=results_dir / "epoch_{}".format(args.epoch) / "predictions.json")
