@@ -9,4 +9,4 @@
 cd "${SLURM_SUBMIT_DIR}"
 
 source venv/bin/activate
-python3 -u ./eval.py --dataset ./dataset_cache --checkpoint ./checkpoints/epoch_4.pt --epoch 4
+python3 -u ./eval.py --dataset ./dataset_cache --checkpoint ./checkpoints/epoch_5.pt --epoch 5
