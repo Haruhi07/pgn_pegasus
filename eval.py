@@ -91,6 +91,6 @@ if __name__ == "__main__":
                     save_dir=results_dir / "cnndm/predictions.json")
 
     eval_result = eval(ref_path=results_dir / "references.json",
-                       pred_path=results_dir / "epoch_{}".format(args.epoch) / "predictions.json")
+                       pred_path=results_dir / "cnndm/predictions.json")
     with open(results_dir / "cnndm/cnndm.json".format(args.epoch), "w") as fp:
         json.dump(eval_result, fp)
