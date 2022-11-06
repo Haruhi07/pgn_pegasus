@@ -10,7 +10,7 @@ from Model import PointerPegasus
 from torch.utils.data import DataLoader, SequentialSampler
 from datasets import load_from_disk
 from generate_dataset import PegasusDataset
-from transformers import PegasusTokenizer
+from transformers import PegasusTokenizer, PegasusForConditionalGeneration
 
 seed = 42
 set_random_seed(42)
@@ -68,8 +68,12 @@ if __name__ == "__main__":
     if args.checkpoint != startpoint:
         print("loading model from {}".format(args.checkpoint))
         model = torch.load(args.checkpoint).to(device)
-    else:
+    elif args.checkpoint == 'random':
+        print("loading random pgn layer")
         model = PointerPegasus(startpoint, tokenizer, device).to(device)
+    else:
+        print("loading original pegasus_cnndm")
+        model = PegasusForConditionalGeneration.from_pretrained(startpoint).to(device)
 
     test_dir = Path(args.dataset)/"tokenized_test.json"
     print("loading tokenized_test...")
@@ -84,9 +88,9 @@ if __name__ == "__main__":
     generate_output(model=model,
                     tokenizer=tokenizer,
                     eval_loader=test_loader,
-                    save_dir=results_dir / "epoch_{}".format(args.epoch) / "predictions.json")
+                    save_dir=results_dir / "cnndm/predictions.json")
 
     eval_result = eval(ref_path=results_dir / "references.json",
                        pred_path=results_dir / "epoch_{}".format(args.epoch) / "predictions.json")
-    with open(results_dir / "epoch_{}".format(args.epoch) / "epoch_{}.json".format(args.epoch), "w") as fp:
+    with open(results_dir / "cnndm/cnndm.json".format(args.epoch), "w") as fp:
         json.dump(eval_result, fp)
