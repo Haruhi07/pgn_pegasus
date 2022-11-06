@@ -82,7 +82,7 @@ if __name__ == "__main__":
     #generate_reference(eval_dataset=tokenized_test)
     test_loader = DataLoader(tokenized_test,
                              sampler=SequentialSampler(tokenized_test),
-                             num_workers=0,
+                             num_workers=2,
                              batch_size=1)
 
     generate_output(model=model,
