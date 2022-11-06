@@ -3,7 +3,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition gpu
 #SBATCH --job-name=eval_0
-#SBATCH --time=6:0:0
+#SBATCH --time=12:0:0
 #SBATCH --mem=16384M
 
 cd "${SLURM_SUBMIT_DIR}"
